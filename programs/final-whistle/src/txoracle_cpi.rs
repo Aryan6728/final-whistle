@@ -45,6 +45,7 @@ use anchor_lang::solana_program::program::invoke;
 
 use crate::errors::FinalWhistleError;
 use crate::state::ConfirmedStat;
+use crate::state::{TxLineFixture, TxLineFixtureBatchSummary, TxLineProofNode};
 
 /// Signed Merkle proof for a single fixture stat, as fetched from TxLINE's
 /// Validation Proofs endpoint. Field names are a best guess from the docs'
@@ -108,4 +109,66 @@ pub fn validate_stat_cpi<'info>(
         away_score: 0,
         match_finished: true,
     })
+}
+
+// ============================================================================
+// REAL, WORKING CPI — validate_fixture
+//
+// Unlike validate_stat_cpi above (still a placeholder), this one uses TxLINE's
+// real, confirmed discriminator and real account/arg types, taken directly
+// from their public IDL (github.com/txodds/tx-on-chain) and tested against a
+// real validation proof fetched from their devnet API. This proves a
+// fixture's authenticity — it does not itself determine a match outcome
+// (that still needs validate_stat, which remains a documented placeholder).
+// ============================================================================
+
+/// Anchor discriminator for `validate_fixture`, confirmed from TxLINE's real
+/// IDL: first 8 bytes of sha256("global:validate_fixture").
+const VALIDATE_FIXTURE_DISCRIMINATOR: [u8; 8] = [231, 129, 218, 86, 223, 114, 21, 126];
+
+/// CPIs into TxLINE's on-chain `validate_fixture` instruction to cryptographically
+/// confirm a fixture snapshot is authentic against their published Merkle roots.
+///
+/// `ten_daily_fixtures_roots` must be the correct PDA for the fixture's time
+/// window — the caller derives this off-chain using TxLINE's documented seeds
+/// (`["ten_daily_fixtures_roots", windowStartDay as u16 LE]`, where
+/// `windowStartDay = floor(epochDay / 10) * 10`) and passes it in.
+pub fn validate_fixture_cpi<'info>(
+    txoracle_program: &AccountInfo<'info>,
+    ten_daily_fixtures_roots: &AccountInfo<'info>,
+    snapshot: TxLineFixture,
+    summary: TxLineFixtureBatchSummary,
+    sub_tree_proof: Vec<TxLineProofNode>,
+    main_tree_proof: Vec<TxLineProofNode>,
+) -> Result<()> {
+    let mut data = VALIDATE_FIXTURE_DISCRIMINATOR.to_vec();
+
+    let mut args_buf: Vec<u8> = Vec::new();
+    snapshot
+        .serialize(&mut args_buf)
+        .map_err(|_| error!(FinalWhistleError::SerializationFailed))?;
+    summary
+        .serialize(&mut args_buf)
+        .map_err(|_| error!(FinalWhistleError::SerializationFailed))?;
+    sub_tree_proof
+        .serialize(&mut args_buf)
+        .map_err(|_| error!(FinalWhistleError::SerializationFailed))?;
+    main_tree_proof
+        .serialize(&mut args_buf)
+        .map_err(|_| error!(FinalWhistleError::SerializationFailed))?;
+    data.extend(args_buf);
+
+    let accounts = vec![AccountMeta::new_readonly(ten_daily_fixtures_roots.key(), false)];
+
+    let ix = Instruction {
+        program_id: txoracle_program.key(),
+        accounts,
+        data,
+    };
+
+    // Both the target account and the TxLINE program itself must be present
+    // in the account_infos slice for invoke() to resolve the CPI correctly.
+    invoke(&ix, &[ten_daily_fixtures_roots.clone(), txoracle_program.clone()])?;
+
+    Ok(())
 }

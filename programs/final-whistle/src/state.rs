@@ -20,6 +20,7 @@ pub struct Market {
     pub bump: u8,
     pub created_at: i64,
     pub settled_at: i64,
+    pub fixture_verified: bool,
 }
 
 impl Market {
@@ -35,7 +36,8 @@ impl Market {
         + 1    // vault_bump
         + 1    // bump
         + 8    // created_at
-        + 8;   // settled_at
+        + 8    // settled_at
+        + 1;   // fixture_verified
 }
 
 #[account]
@@ -113,4 +115,47 @@ pub fn resolve_side(market_type: MarketType, stat: &ConfirmedStat) -> Result<u8>
 pub fn require_valid_side(side: u8, num_sides: u8) -> Result<()> {
     require!((side as usize) < MAX_SIDES && side < num_sides, FinalWhistleError::InvalidSide);
     Ok(())
+}
+
+// ============================================================
+// TxLINE's real on-chain types, matching their published IDL
+// exactly (idl/txoracle.json), used for the verify_fixture CPI
+// into their validate_fixture instruction.
+// ============================================================
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub struct TxLineFixture {
+    pub ts: i64,
+    pub start_time: i64,
+    pub competition: String,
+    pub competition_id: i32,
+    pub fixture_group_id: i32,
+    pub participant1_id: i32,
+    pub participant1: String,
+    pub participant2_id: i32,
+    pub participant2: String,
+    pub fixture_id: i64,
+    pub participant1_is_home: bool,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub struct TxLineFixtureUpdateStats {
+    pub update_count: u32,
+    pub min_timestamp: i64,
+    pub max_timestamp: i64,
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub struct TxLineFixtureBatchSummary {
+    pub fixture_id: i64,
+    pub competition_id: i32,
+    pub competition: String,
+    pub update_stats: TxLineFixtureUpdateStats,
+    pub update_sub_tree_root: [u8; 32],
+}
+
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+pub struct TxLineProofNode {
+    pub hash: [u8; 32],
+    pub is_right_sibling: bool,
 }

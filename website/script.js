@@ -148,11 +148,11 @@
 
   // Must exactly match the fixtures created by init_markets.ts
   var MARKET_CONFIG = {
-    'England': { fixtureId: 1, side: 0 },
-    'Draw': { fixtureId: 1, side: 1 },
-    'Argentina': { fixtureId: 1, side: 2 },
-    'Over 2.5': { fixtureId: 2, side: 0 },
-    'Under 2.5': { fixtureId: 2, side: 1 },
+    'England': { fixtureId: 3, side: 0 },
+    'Draw': { fixtureId: 3, side: 1 },
+    'Argentina': { fixtureId: 3, side: 2 },
+    'Over 2.5': { fixtureId: 4, side: 0 },
+    'Under 2.5': { fixtureId: 4, side: 1 },
   };
 
   function isWalletConnected() {
@@ -296,8 +296,8 @@
   var LAMPORTS_PER_SOL = 1000000000;
 
   var MARKETS = [
-    { fixtureId: 1, label: 'England vs Argentina', sides: ['England', 'Draw', 'Argentina'] },
-    { fixtureId: 2, label: 'France vs Spain (O/U 2.5)', sides: ['Over 2.5', 'Under 2.5'] },
+    { fixtureId: 3, label: 'England vs Argentina', sides: ['England', 'Draw', 'Argentina'] },
+    { fixtureId: 4, label: 'France vs Spain (O/U 2.5)', sides: ['Over 2.5', 'Under 2.5'] },
   ];
 
   function u64BytesLocal(n) {
