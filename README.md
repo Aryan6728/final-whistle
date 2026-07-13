@@ -8,6 +8,15 @@ Trustless settlement engine for World Cup prediction markets, built on Solana an
 
 ## What's real vs. what's a placeholder
 
+**Real, verified, working:** `verify_fixture` genuinely CPIs into TxLINE's own
+on-chain `validate_fixture` instruction and succeeds on devnet - confirmed
+transactions:
+- https://explorer.solana.com/tx/4xcED6D9byrK2Vy94cQDLjE9X4WJewop9yA2ZJZuc4WfDMah5vYrQnx14xsb7MCNiU75cZ9RG2PkhkZq2ZZyXkwE?cluster=devnet
+- https://explorer.solana.com/tx/3URxSxPY8oFvC9ngg3PYmNVUB2FBCfrbRcnCQv6BwPkTZcBDyEdeq2WLPv25Wh5rkB8ZYkV58nFkroXHkXS79CUR?cluster=devnet
+
+This uses TxLINE's real IDL (github.com/txodds/tx-on-chain) and real Merkle
+proofs fetched live from their devnet API.
+
 This program was written by hand in an environment without a Rust/Anchor toolchain available, so it hasn't been compiled here — run `anchor build` locally first thing. The structure follows standard, well-established Anchor patterns (PDA vault, checked arithmetic, permissionless settlement), so it should be close, but treat the first build as a normal debugging pass, not a rubber stamp.
 
 **Solid, not placeholder:**

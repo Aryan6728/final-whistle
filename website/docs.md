@@ -53,6 +53,24 @@ Anchor · Solana (devnet) · TxLINE World Cup free tier (service level 1 or 12) 
 - No TxL token is used for staking, wagering, or peer-to-peer transfer — stakes are held in SOL/USDC, as required by the track rules.
 - Settlement is a genuine CPI into TxLINE's on-chain `validate_stat` instruction, not a re-implemented signature check — this follows the track's encouraged "Custom On-Chain Settlement Engine" pattern.
 
+## Real, verified on-chain TxLINE integration
+
+Beyond fetching TxLINE fixtures off-chain, our deployed program genuinely CPIs
+into TxLINE's own on-chain `validate_fixture` instruction and succeeds —
+confirmed by these real devnet transactions:
+
+- England vs Argentina: https://explorer.solana.com/tx/4xcED6D9byrK2Vy94cQDLjE9X4WJewop9yA2ZJZuc4WfDMah5vYrQnx14xsb7MCNiU75cZ9RG2PkhkZq2ZZyXkwE?cluster=devnet
+- France vs Spain: https://explorer.solana.com/tx/3URxSxPY8oFvC9ngg3PYmNVUB2FBCfrbRcnCQv6BwPkTZcBDyEdeq2WLPv25Wh5rkB8ZYkV58nFkroXHkXS79CUR?cluster=devnet
+
+This uses TxLINE's real, published IDL (discriminator, account layout) taken
+directly from their public `tx-on-chain` GitHub repo, and real Merkle
+validation proofs fetched live from their devnet API — not mocked data. This
+proves the fixture's authenticity trustlessly on-chain. It's a separate,
+simpler instruction from full score-based settlement (`validate_stat`), which
+remains a documented placeholder below — score validation involves
+significantly more complex proof types that were out of scope for the
+hackathon window.
+
 ## Links
 
 - Repo: _add link_
