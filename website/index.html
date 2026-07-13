@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Final Whistle — Trustless World Cup settlement on Solana</title>
+<meta name="description" content="A prediction market that settles itself the moment TxLINE confirms a match outcome on-chain — no resolver, no dispute window.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container">
+    <a href="index.html" class="wordmark"><span class="dot"></span>Final Whistle</a>
+    <div class="nav-links">
+      <a href="#problem">Why</a>
+      <a href="#how">How it works</a>
+      <a href="transparency.html">Transparency</a>
+      <a href="docs.md">Docs</a>
+      <button class="btn solid">Connect wallet</button>
+    </div>
+  </div>
+</nav>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>ARG 2–1 BRA · SETTLING</span>
+    <span>FRA vs GER · O/U 2.5 OPEN</span>
+    <span>ESP 0–0 POR · LIVE</span>
+    <span>0 DISPUTES · 100% ON-CHAIN</span>
+    <span>ARG 2–1 BRA · SETTLING</span>
+    <span>FRA vs GER · O/U 2.5 OPEN</span>
+    <span>ESP 0–0 POR · LIVE</span>
+    <span>0 DISPUTES · 100% ON-CHAIN</span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="sweep" aria-hidden="true"></div>
+  <div class="container">
+    <div class="eyebrow"><span class="live-dot" aria-hidden="true"></span>World Cup Hackathon · Built on TxLINE + Solana</div>
+    <h1>The whistle blows.<br>The market <span class="type">settles.</span></h1>
+    <p class="lead">Final Whistle is a prediction market that settles itself. The moment TxLINE's signed match data confirms an outcome on-chain, funds move — no resolver, no dispute window, no oracle committee.</p>
+    <div class="cta-row">
+      <button class="btn solid">Explore live markets</button>
+      <a href="#how" class="btn">See how settlement works</a>
+    </div>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="container">
+    <div class="eyebrow-sm">The problem</div>
+    <h2>Settlement is where trust breaks down</h2>
+    <p class="lede">Every prediction market eventually asks the same question: who decides the result, and how long do you wait for them to decide it?</p>
+    <div class="split">
+      <div class="card">
+        <h3>How it usually works</h3>
+        <ul>
+          <li>A backend or admin manually marks a market as resolved</li>
+          <li>Committee-based oracles hold multi-day dispute windows</li>
+          <li>Fast-moving markets — next scorer, next corner — are too quick for manual review</li>
+          <li>Payouts wait on a person, not on the match</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>How Final Whistle works</h3>
+        <ul>
+          <li>TxLINE signs match data and anchors it on Solana as it happens</li>
+          <li>Our program calls directly into TxLINE's on-chain validate_stat instruction</li>
+          <li>A confirmed outcome settles the market in the same transaction</li>
+          <li>Payouts wait on the final whistle, not on a resolver</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark">
+  <div class="container">
+    <div class="eyebrow-sm">Under the hood</div>
+    <h2>Built for zero disputes</h2>
+    <p class="lede">These aren't live metrics — they're the guarantees the program is designed around.</p>
+    <div class="stat-strip">
+      <div class="stat"><div class="num">0</div><div class="label">Human resolvers</div></div>
+      <div class="stat"><div class="num">1</div><div class="label">CPI call to settle</div></div>
+      <div class="stat"><div class="num">0</div><div class="label">Dispute windows</div></div>
+      <div class="stat"><div class="num">100</div><div class="label">% on-chain verifiable</div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="eyebrow-sm">Features</div>
+    <h2>Everything settles on its own</h2>
+    <div class="feature-grid">
+      <div class="feature"><h3>PDA escrow</h3><p>Stakes lock into a program-controlled vault — never held by a team or a backend.</p></div>
+      <div class="feature"><h3>CPI settlement</h3><p>Our program calls directly into TxLINE's validate_stat instruction to confirm outcomes.</p></div>
+      <div class="feature"><h3>Merkle-proven data</h3><p>Every settlement traces back to a signed proof anchored on Solana.</p></div>
+      <div class="feature"><h3>Permissionless triggers</h3><p>Anyone can call settlement once a match ends — no gatekeeper required.</p></div>
+      <div class="feature"><h3>Open ledger</h3><p>Every settled market is public, with its proof and transaction linked.</p></div>
+      <div class="feature"><h3>Built for the World Cup</h3><p>Match winner and total goals markets, tracked across the tournament schedule.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="section-dark">
+  <div class="container">
+    <div class="eyebrow-sm">How it works</div>
+    <h2>From stake to settlement</h2>
+    <div class="steps">
+      <div class="step"><div class="num">01</div><div><h4>Stake on an outcome</h4><p>Pick a market — match winner or total goals — and lock SOL or USDC into it.</p></div></div>
+      <div class="step"><div class="num">02</div><div><h4>Funds sit in escrow</h4><p>A program-controlled PDA vault holds the pool. No team wallet ever touches it.</p></div></div>
+      <div class="step"><div class="num">03</div><div><h4>TxLINE signs the result</h4><p>When the match ends, TxLINE anchors a signed Merkle proof of the final stat on Solana.</p></div></div>
+      <div class="step"><div class="num">04</div><div><h4>The program verifies it</h4><p>settle_market calls TxLINE's validate_stat instruction directly — no external oracle, no re-implemented crypto.</p></div></div>
+      <div class="step"><div class="num">05</div><div><h4>The correct side gets paid</h4><p>Settlement and payout happen in the same on-chain step the match ends on.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div>
+      <div class="wordmark" style="color:#F6F8F4"><span class="dot"></span>Final Whistle</div>
+      <p style="margin-top:12px; font-size:14px; max-width:320px;">A trustless settlement engine for World Cup prediction markets, built on TxLINE and Solana.</p>
+    </div>
+    <div class="footer-links">
+      <a href="transparency.html">Transparency</a>
+      <a href="docs.md">Docs</a>
+      <a href="https://github.com/Aryan6728" target="_blank" rel="noopener">GitHub</a>
+      <!-- TODO: replace # with the project's X (Twitter) handle link -->
+      <a href="#" target="_blank" rel="noopener">X (Twitter)</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2026 Final Whistle. Built for the TxODDS World Cup Hackathon.</span>
+    <span class="badge">Powered by TxLINE · Solana</span>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
