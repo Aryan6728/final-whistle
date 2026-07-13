@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Transparency — Final Whistle</title>
-<meta name="description" content="Every settlement Final Whistle makes, with its TxLINE proof and Solana transaction, verifiable independently.">
+<title>Live Markets — Final Whistle</title>
+<meta name="description" content="Browse live and upcoming World Cup prediction markets on Final Whistle.">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -58,57 +58,49 @@
 <section class="hero" style="padding: 84px 0 64px;">
   <div class="sweep" aria-hidden="true"></div>
   <div class="container">
-    <div class="eyebrow"><span class="live-dot" aria-hidden="true"></span>On-chain record</div>
-    <h1 style="font-size: clamp(38px,5.5vw,64px);">Every settlement,<br>provably <span>fair.</span></h1>
-    <p class="lead">No dispute committee decided these outcomes. Each one settled the moment TxLINE's signed proof confirmed it on Solana — and you can verify every step yourself.</p>
+    <div class="eyebrow"><span class="live-dot" aria-hidden="true"></span>Live Markets</div>
+    <h1 style="font-size: clamp(38px,5.5vw,64px);">Pick a side.<br>Let the whistle decide.</h1>
+    <p class="lead">Stake locks into a program-controlled vault. The market settles itself the moment TxLINE confirms the result — no waiting on anyone.</p>
   </div>
 </section>
 
 <section>
   <div class="container">
-    <div class="eyebrow-sm">Settlement ledger</div>
-    <h2>Recent settlements</h2>
-    <div class="demo-note">Demo data — these three entries are illustrative. Live entries populate automatically once a tracked match ends and settle_market executes.</div>
+    <div class="eyebrow-sm">Open markets</div>
+    <h2>World Cup fixtures</h2>
+    <div class="demo-note">Demo data — these are sample markets showing the product experience. Live markets populate automatically from the TxLINE fixture feed.</div>
 
-    <div class="receipt">
-      <div class="receipt-meta">
-        <div class="receipt-match">Argentina vs Brazil — Match winner</div>
-        <div class="receipt-detail">Outcome: Argentina · Pool: 42.5 SOL · Settled at 90'+4'</div>
-        <div class="receipt-hash">Proof <a href="#">a3f9…21bd</a> · Tx <a href="#">5kP2…q7Zt</a></div>
+    <div class="market-card">
+      <div class="market-type">Match Winner</div>
+      <h3>Argentina vs Brazil</h3>
+      <div class="pool-bar">
+        <span style="width:54%; background:var(--gold);"></span>
+        <span style="width:21%; background:var(--ink-soft);"></span>
+        <span style="width:25%; background:var(--gold-deep);"></span>
       </div>
-      <div class="stamp">Settled</div>
+      <div class="market-sides">
+        <button class="side-btn" data-side="Argentina"><span class="side-name">Argentina</span><span class="side-pct">54% of pool</span></button>
+        <button class="side-btn" data-side="Draw"><span class="side-name">Draw</span><span class="side-pct">21% of pool</span></button>
+        <button class="side-btn" data-side="Brazil"><span class="side-name">Brazil</span><span class="side-pct">25% of pool</span></button>
+      </div>
+      <div class="market-pool-total">Pool: 42.5 SOL · Kicks off in 3h 20m</div>
+      <div class="stake-note" data-note></div>
     </div>
 
-    <div class="receipt">
-      <div class="receipt-meta">
-        <div class="receipt-match">France vs Germany — Total goals O/U 2.5</div>
-        <div class="receipt-detail">Outcome: Over · Pool: 18.2 SOL · Settled at 90'+2'</div>
-        <div class="receipt-hash">Proof <a href="#">7c1e…88fa</a> · Tx <a href="#">9mN4…j2Xw</a></div>
+    <div class="market-card">
+      <div class="market-type">Total Goals Over/Under 2.5</div>
+      <h3>France vs Germany</h3>
+      <div class="pool-bar">
+        <span style="width:61%; background:var(--gold);"></span>
+        <span style="width:39%; background:var(--ink-soft);"></span>
       </div>
-      <div class="stamp">Settled</div>
-    </div>
-
-    <div class="receipt">
-      <div class="receipt-meta">
-        <div class="receipt-match">Spain vs Portugal — Match winner</div>
-        <div class="receipt-detail">Outcome: Draw · Pool: 27.8 SOL · Settled at 90'+3'</div>
-        <div class="receipt-hash">Proof <a href="#">e5b0…f61c</a> · Tx <a href="#">2vT8…k9Ln</a></div>
+      <div class="market-sides">
+        <button class="side-btn" data-side="Over 2.5"><span class="side-name">Over 2.5</span><span class="side-pct">61% of pool</span></button>
+        <button class="side-btn" data-side="Under 2.5"><span class="side-name">Under 2.5</span><span class="side-pct">39% of pool</span></button>
       </div>
-      <div class="stamp">Settled</div>
+      <div class="market-pool-total">Pool: 18.2 SOL · Kicks off in 6h 05m</div>
+      <div class="stake-note" data-note></div>
     </div>
-  </div>
-</section>
-
-<section class="section-dark">
-  <div class="container">
-    <div class="eyebrow-sm">Verify it yourself</div>
-    <h2>No reason to trust us</h2>
-    <p class="lede">Every claim above is checkable independently, without asking Final Whistle for anything.</p>
-    <ol class="verify-steps" style="color: rgba(246,248,244,0.75);">
-      <li>1. Take the proof hash and check it against TxLINE's validation-proofs endpoint for that fixture.</li>
-      <li>2. Open the transaction signature on Solana Explorer and confirm the settle_market instruction and its CPI into TxLINE's program.</li>
-      <li>3. Compare the payout amounts against the pool size recorded in the market's on-chain account.</li>
-    </ol>
   </div>
 </section>
 
@@ -132,6 +124,7 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@solana/[email protected]/lib/index.iife.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

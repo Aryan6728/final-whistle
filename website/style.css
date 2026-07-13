@@ -74,6 +74,8 @@ img, svg { display: block; max-width: 100%; }
 .btn:hover { background: var(--gold); color: var(--pitch); transform: translateY(-1px); }
 .btn.solid { background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color: var(--pitch); border-color: transparent; }
 .btn.solid:hover { filter: brightness(1.08); color: var(--pitch); }
+.btn.wallet-connected { background: transparent; border-color: var(--gold); color: var(--gold); font-family: var(--font-mono); font-size: 13px; }
+.btn.wallet-connected:hover { background: var(--signal); border-color: var(--signal); color: #fff; }
 
 /* TICKER — continuous scoreboard strip, always animating */
 .ticker { background: var(--ink); border-bottom: 1px solid var(--line-on-dark); overflow: hidden; white-space: nowrap; }
@@ -212,6 +214,19 @@ footer .container { display: flex; justify-content: space-between; align-items: 
 }
 @keyframes stamp-glow { 0%,100% { box-shadow: 0 0 0 rgba(184,135,47,0); } 50% { box-shadow: 0 0 16px rgba(184,135,47,0.55); } }
 .demo-note { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-soft); background: #fff; border: 1px dashed var(--line-on-light); padding: 14px 18px; border-radius: 4px; margin-bottom: 32px; }
+
+/* MARKETS PAGE */
+.market-card { background: #fff; border: 1px solid var(--line-on-light); border-radius: 8px; padding: 28px; margin-bottom: 24px; }
+.market-type { font-family: var(--font-mono); font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gold-deep); margin-bottom: 6px; }
+.market-card h3 { font-family: var(--font-display); font-size: 24px; font-weight: 700; text-transform: uppercase; margin-bottom: 16px; }
+.pool-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 16px; background: var(--line-on-light); }
+.market-sides { display: flex; gap: 12px; flex-wrap: wrap; }
+.side-btn { flex: 1; min-width: 120px; padding: 14px; border: 1px solid var(--line-on-light); border-radius: 6px; background: var(--chalk); cursor: pointer; text-align: left; transition: border-color 0.2s, background 0.2s; font-family: var(--font-body); }
+.side-btn:hover { border-color: var(--gold); background: #fff; }
+.side-btn .side-name { font-weight: 600; font-size: 14.5px; display: block; margin-bottom: 4px; }
+.side-btn .side-pct { font-family: var(--font-mono); font-size: 13px; color: var(--ink-soft); }
+.market-pool-total { font-size: 13px; color: var(--ink-soft); margin-top: 14px; }
+.stake-note { font-family: var(--font-mono); font-size: 12.5px; color: var(--gold-deep); margin-top: 10px; min-height: 18px; }
 .verify-steps { margin-top: 20px; list-style: none; }
 .verify-steps li { font-size: 14.5px; padding: 8px 0; }
 
