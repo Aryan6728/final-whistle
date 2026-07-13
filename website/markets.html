@@ -70,6 +70,8 @@
     <h2>World Cup fixtures</h2>
     <div class="demo-note">Demo data — these are sample markets showing the product experience. Live markets populate automatically from the TxLINE fixture feed.</div>
 
+    <div class="markets-grid">
+
     <div class="market-card">
       <div class="market-type">Match Winner</div>
       <h3>Argentina vs Brazil</h3>
@@ -78,12 +80,19 @@
         <span style="width:21%; background:var(--ink-soft);"></span>
         <span style="width:25%; background:var(--gold-deep);"></span>
       </div>
-      <div class="market-sides">
-        <button class="side-btn" data-side="Argentina"><span class="side-name">Argentina</span><span class="side-pct">54% of pool</span></button>
-        <button class="side-btn" data-side="Draw"><span class="side-name">Draw</span><span class="side-pct">21% of pool</span></button>
-        <button class="side-btn" data-side="Brazil"><span class="side-name">Brazil</span><span class="side-pct">25% of pool</span></button>
+      <div class="stake-input-row">
+        <label for="amount-1">Stake amount (SOL)</label>
+        <input type="number" id="amount-1" class="stake-amount" min="0.001" step="0.001" value="0.01">
       </div>
-      <div class="market-pool-total">Pool: 42.5 SOL · Kicks off in 3h 20m</div>
+      <div class="market-sides">
+        <button class="side-btn" data-side="Argentina"><span class="side-name">🇦🇷 Argentina</span><span class="side-pct">54%</span></button>
+        <button class="side-btn" data-side="Draw"><span class="side-name">Draw</span><span class="side-pct">21%</span></button>
+        <button class="side-btn" data-side="Brazil"><span class="side-name">🇧🇷 Brazil</span><span class="side-pct">25%</span></button>
+      </div>
+      <div class="market-footer">
+        <span>Pool: 42.5 SOL · Kicks off in 3h 20m</span>
+        <span class="badge-devnet">Devnet</span>
+      </div>
       <div class="stake-note" data-note></div>
     </div>
 
@@ -94,13 +103,31 @@
         <span style="width:61%; background:var(--gold);"></span>
         <span style="width:39%; background:var(--ink-soft);"></span>
       </div>
-      <div class="market-sides">
-        <button class="side-btn" data-side="Over 2.5"><span class="side-name">Over 2.5</span><span class="side-pct">61% of pool</span></button>
-        <button class="side-btn" data-side="Under 2.5"><span class="side-name">Under 2.5</span><span class="side-pct">39% of pool</span></button>
+      <div class="stake-input-row">
+        <label for="amount-2">Stake amount (SOL)</label>
+        <input type="number" id="amount-2" class="stake-amount" min="0.001" step="0.001" value="0.01">
       </div>
-      <div class="market-pool-total">Pool: 18.2 SOL · Kicks off in 6h 05m</div>
+      <div class="market-sides">
+        <button class="side-btn" data-side="Over 2.5"><span class="side-name">🇫🇷 🇩🇪 Over 2.5</span><span class="side-pct">61%</span></button>
+        <button class="side-btn" data-side="Under 2.5"><span class="side-name">Under 2.5</span><span class="side-pct">39%</span></button>
+      </div>
+      <div class="market-footer">
+        <span>Pool: 18.2 SOL · Kicks off in 6h 05m</span>
+        <span class="badge-devnet">Devnet</span>
+      </div>
       <div class="stake-note" data-note></div>
     </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-dark">
+  <div class="container">
+    <div class="eyebrow-sm">Your activity</div>
+    <h2>My Positions</h2>
+    <p class="lede" style="margin-bottom: 20px;">Read directly from your on-chain position accounts — not a database. Connect your wallet above, then refresh.</p>
+    <button class="btn solid" id="refreshPositionsBtn">Refresh my positions</button>
+    <div id="positionsList" style="margin-top: 24px;"></div>
   </div>
 </section>
 
@@ -124,7 +151,7 @@
   </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/@solana/[email protected]/lib/index.iife.min.js"></script>
+<script src="https://unpkg.com/@solana/web3.js@latest/lib/index.iife.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

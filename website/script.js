@@ -140,7 +140,6 @@
 
   var PROGRAM_ID_STR = 'GmpCe863ZJD1WrbPAg1Di3Bgfg7CGaR1NGGyBJejMWji';
   var DEVNET_RPC = 'https://api.devnet.solana.com';
-  var STAKE_AMOUNT_SOL = 0.01;
   var LAMPORTS_PER_SOL = 1000000000;
 
   // Anchor discriminator for our program's `stake` instruction
@@ -179,7 +178,7 @@
     return result;
   }
 
-  async function realStake(side, note) {
+  async function realStake(side, amountSol, note) {
     if (typeof solanaWeb3 === 'undefined') {
       note.textContent = 'Solana library did not load \u2014 check your connection and refresh.';
       return;
@@ -187,6 +186,10 @@
     var marketConfig = MARKET_CONFIG[side];
     if (!marketConfig) {
       note.textContent = 'Unknown market side.';
+      return;
+    }
+    if (!amountSol || isNaN(amountSol) || amountSol <= 0) {
+      note.textContent = 'Enter a valid stake amount above 0.';
       return;
     }
     var provider = getProvider();
@@ -209,7 +212,7 @@
       var positionSeed = [new TextEncoder().encode('position'), marketPda.toBuffer(), provider.publicKey.toBuffer()];
       var positionPda = solanaWeb3.PublicKey.findProgramAddressSync(positionSeed, programId)[0];
 
-      var amountLamports = Math.round(STAKE_AMOUNT_SOL * LAMPORTS_PER_SOL);
+      var amountLamports = Math.round(amountSol * LAMPORTS_PER_SOL);
       var data = concatBytes([
         STAKE_DISCRIMINATOR,
         new Uint8Array([marketConfig.side]),
@@ -244,7 +247,7 @@
         txSig = await connection.sendRawTransaction(signedTx.serialize());
       }
 
-      note.innerHTML = 'Staked ' + STAKE_AMOUNT_SOL + ' SOL on "' + side + '". <a href="https://explorer.solana.com/tx/' +
+      note.innerHTML = 'Staked ' + amountSol + ' SOL on "' + side + '". <a href="https://explorer.solana.com/tx/' +
         txSig + '?cluster=devnet" target="_blank" rel="noopener">View transaction</a> (confirming\u2026)';
 
       await connection.confirmTransaction({
@@ -253,7 +256,7 @@
         lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
       }, 'confirmed');
 
-      note.innerHTML = 'Staked ' + STAKE_AMOUNT_SOL + ' SOL on "' + side + '". <a href="https://explorer.solana.com/tx/' +
+      note.innerHTML = 'Staked ' + amountSol + ' SOL on "' + side + '". <a href="https://explorer.solana.com/tx/' +
         txSig + '?cluster=devnet" target="_blank" rel="noopener">View confirmed transaction</a>';
     } catch (err) {
       console.error('Stake failed:', err);
@@ -266,14 +269,107 @@
     btn.addEventListener('click', function () {
       var card = btn.closest('.market-card');
       var note = card ? card.querySelector('[data-note]') : null;
+      var amountInput = card ? card.querySelector('.stake-amount') : null;
       if (!note) return;
       var side = btn.getAttribute('data-side');
+      var amountSol = amountInput ? parseFloat(amountInput.value) : 0.01;
 
       if (isWalletConnected()) {
-        realStake(side, note);
+        realStake(side, amountSol, note);
       } else {
         note.textContent = 'Connect your wallet above to stake on "' + side + '".';
       }
     });
   });
+})();
+
+// My Positions — reads real on-chain StakePosition accounts for the
+// connected wallet across our known markets. Not a database — this is
+// exactly the same account layout our Anchor program writes to.
+(function () {
+  var refreshBtn = document.getElementById('refreshPositionsBtn');
+  var positionsList = document.getElementById('positionsList');
+  if (!refreshBtn || !positionsList) return;
+
+  var PROGRAM_ID_STR = 'GmpCe863ZJD1WrbPAg1Di3Bgfg7CGaR1NGGyBJejMWji';
+  var DEVNET_RPC = 'https://api.devnet.solana.com';
+  var LAMPORTS_PER_SOL = 1000000000;
+
+  var MARKETS = [
+    { fixtureId: 1, label: 'Argentina vs Brazil', sides: ['Argentina', 'Draw', 'Brazil'] },
+    { fixtureId: 2, label: 'France vs Germany (O/U 2.5)', sides: ['Over 2.5', 'Under 2.5'] },
+  ];
+
+  function u64BytesLocal(n) {
+    var buf = new Uint8Array(8);
+    new DataView(buf.buffer).setBigUint64(0, BigInt(n), true);
+    return buf;
+  }
+
+  async function fetchPositions() {
+    if (typeof solanaWeb3 === 'undefined') {
+      positionsList.innerHTML = '<p class="no-positions">Solana library did not load \u2014 refresh the page.</p>';
+      return;
+    }
+    var provider = window.solana || window.solflare || window.backpack;
+    if (!provider || !provider.publicKey) {
+      positionsList.innerHTML = '<p class="no-positions">Connect your wallet above first.</p>';
+      return;
+    }
+
+    positionsList.innerHTML = '<p class="no-positions">Loading\u2026</p>';
+
+    var programId = new solanaWeb3.PublicKey(PROGRAM_ID_STR);
+    var connection = new solanaWeb3.Connection(DEVNET_RPC, 'confirmed');
+    var rows = [];
+
+    for (var i = 0; i < MARKETS.length; i++) {
+      var m = MARKETS[i];
+      try {
+        var fixtureIdBuf = u64BytesLocal(m.fixtureId);
+        var marketPda = solanaWeb3.PublicKey.findProgramAddressSync(
+          [new TextEncoder().encode('market'), fixtureIdBuf], programId
+        )[0];
+        var positionPda = solanaWeb3.PublicKey.findProgramAddressSync(
+          [new TextEncoder().encode('position'), marketPda.toBuffer(), provider.publicKey.toBuffer()], programId
+        )[0];
+
+        var accInfo = await connection.getAccountInfo(positionPda);
+        if (!accInfo || !accInfo.data) continue;
+
+        var data = accInfo.data;
+        // Layout: 8 discriminator + 32 market + 32 staker + 1 side + 8 amount + 1 claimed + 1 bump
+        var side = data[72];
+        var amountView = new DataView(data.buffer, data.byteOffset + 73, 8);
+        var amountLamports = amountView.getBigUint64(0, true);
+        var claimed = data[81] === 1;
+        var amountSol = Number(amountLamports) / LAMPORTS_PER_SOL;
+
+        rows.push({
+          market: m.label,
+          side: m.sides[side] || ('Side ' + side),
+          amountSol: amountSol,
+          claimed: claimed,
+        });
+      } catch (err) {
+        console.error('Could not read position for', m.label, err);
+      }
+    }
+
+    if (rows.length === 0) {
+      positionsList.innerHTML = '<p class="no-positions">No positions yet \u2014 stake on a market above, then refresh here.</p>';
+      return;
+    }
+
+    positionsList.innerHTML = rows.map(function (p) {
+      var status = p.claimed ? 'Claimed' : 'Open \u2014 settles when the match ends';
+      return '<div class="position-row">' +
+        '<span><span class="pos-market">' + p.market + '</span><span class="pos-side">' + p.side + '</span></span>' +
+        '<span class="pos-amount">' + p.amountSol + ' SOL</span>' +
+        '<span class="pos-status">' + status + '</span>' +
+        '</div>';
+    }).join('');
+  }
+
+  refreshBtn.addEventListener('click', fetchPositions);
 })();
