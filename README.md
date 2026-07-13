@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="website/logo-readme.png" alt="Final Whistle" width="220">
+</p>
+
 # Final Whistle — Anchor Program
 
 Trustless settlement engine for World Cup prediction markets, built on Solana and powered by TxLINE.

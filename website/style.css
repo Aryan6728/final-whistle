@@ -46,6 +46,7 @@ img, svg { display: block; max-width: 100%; }
 .nav .container { display: flex; align-items: center; justify-content: space-between; height: 72px; flex-wrap: wrap; gap: 12px; }
 .wordmark { font-family: var(--font-display); font-weight: 800; font-size: 24px; color: var(--chalk); letter-spacing: 0.02em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
 .wordmark .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold); }
+.wordmark .logo-img { height: 34px; width: 34px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 1px rgba(232,184,75,0.4); }
 .nav-links { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
 .nav-links a { position: relative; color: var(--chalk); opacity: 0.75; font-size: 14px; font-weight: 500; transition: opacity 0.2s; padding-bottom: 4px; }
 .nav-links a::after {

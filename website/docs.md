@@ -57,7 +57,9 @@ Anchor · Solana (devnet) · TxLINE World Cup free tier (service level 1 or 12) 
 
 - Repo: _add link_
 - Demo video: _add link_
-- Live site / devnet program: _add link_
+- Deployed program (devnet): `GmpCe863ZJD1WrbPAg1Di3Bgfg7CGaR1NGGyBJejMWji`
+  https://explorer.solana.com/address/GmpCe863ZJD1WrbPAg1Di3Bgfg7CGaR1NGGyBJejMWji?cluster=devnet
+- Live website: _add link_
 - X (Twitter): _add link_
 
 ## Feedback for TxODDS
